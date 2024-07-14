@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2980b9, #2c3e50);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .register-container {
+            background-color: #ffffff; /* White background */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            transition: all 0.3s ease; /* Add transition effect */
+        }
+
+        .register-container:hover {
+            transform: scale(1.05); /* Scale up on hover */
+        }
+
+        .register-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #000000; /* Black text color */
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #000000; /* Black text color */
+        }
+
+        .btn-primary {
+            background-color: #0056b3; /* Blue button */
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #004080; /* Darker shade on hover */
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>Register</h2>
+        <form id="registerForm" action="/register" method="post">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            var formData = new FormData(document.getElementById('registerForm'));
+
+            fetch('/signup', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showMessage(data.error, 'error');
+                } else if (data.success) {
+                    showMessage(data.success, 'success');
+                    // Redirect to home page after a brief delay
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 2000); // Redirect after 2 seconds
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('An error occurred, please try again later', 'error');
+            });
+        });
+
+        function showMessage(message, type) {
+            var messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = message;
+            if (type === 'error') {
+                messageDiv.className = 'alert alert-danger';
+            } else {
+                messageDiv.className = 'alert alert-success';
+            }
+        }
+    </script>
+</body>
+</html>
